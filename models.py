@@ -22,4 +22,17 @@ class Doctor(Base):
     def __repr__(self):
         return f"<Dr(name='{self.last_name}', specialty='{self.specialty}')>"
 
+class Patient(Base):
+    __tablename__ = 'patients'
+
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(100), nullable=False)
+    last_name = Column(String(100), nullable=False)
+    age = Column(Integer)
+    contact = Column(String(25))
+
+    def __repr__(self):
+        return f"<Patient(name='{self.last_name}')>"
+    
+    
 

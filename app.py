@@ -50,5 +50,16 @@ def list_patients():
     else:
         click.echo("No patients available.")
 
+@cli.command()
+def list_doctors():
+    doctors = session.query(Doctor).all()
+
+    if doctors:
+        click.echo("List of Doctors:")
+        for doctor in doctors:
+            click.echo(f"ID: {doctor.id}, Name: {doctor.first_name} {doctor.last_name}, Specialty: {doctor.specialty}, Email: {doctor.email}, Phone: {doctor.phone}")
+    else:
+        click.echo("No doctors available.")
+
 if __name__ == '__main__':
     cli()

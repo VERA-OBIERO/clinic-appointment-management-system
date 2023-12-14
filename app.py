@@ -84,5 +84,18 @@ def make_appointment(doctor_id, patient_id, appointment_time):
     else:
         click.echo('Doctor or Patient ID not found. Please check and try again.')
 
+@cli.command()
+def list_appointments():
+    appointments = session.query(Appointment).all()
+
+    if appointments:
+        click.echo("List of Appointments:")
+        for appointment in appointments:
+            doctor_name = f"{appointment.doctor.first_name} {appointment.doctor.last_name}"
+            patient_name = f"{appointment.patient.first_name} {appointment.patient.last_name}"
+            click.echo(f"ID: {appointment.id}, Doctor: {doctor_name}, Patient: {patient_name}, Appointment Time: {appointment.appointment_time}")
+    else:
+        click.echo("No appointments available.")
+
 if __name__ == '__main__':
     cli()

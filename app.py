@@ -1,6 +1,7 @@
 import click
 from sqlalchemy.orm import sessionmaker
-from models import engine, Patient, Doctor, Base
+from models import engine, Patient, Doctor, Appointment, Base
+from datetime import datetime
 
 # Bind the engine to the Base class for metadata creation
 Base.metadata.bind = engine
@@ -60,6 +61,28 @@ def list_doctors():
             click.echo(f"ID: {doctor.id}, Name: {doctor.first_name} {doctor.last_name}, Specialty: {doctor.specialty}, Email: {doctor.email}, Phone: {doctor.phone}")
     else:
         click.echo("No doctors available.")
+
+@cli.command()
+@click.option('--doctor-id', prompt='Doctor ID', type=int, help='ID of the doctor')
+@click.option('--patient-id', prompt='Patient ID', type=int, help='ID of the patient')
+@click.option('--appointment-time', prompt='Appointment Time', help='Date and time of the appointment (YYYY-MM-DD HH:MM)')
+def make_appointment(doctor_id, patient_id, appointment_time):
+    try:
+        appointment_datetime = datetime.strptime(appointment_time, '%Y-%m-%d %H:%M')
+    except ValueError:
+        click.echo('Invalid date/time format. Please use YYYY-MM-DD HH:MM format.')
+        return
+
+    doctor = session.query(Doctor).get(doctor_id)
+    patient = session.query(Patient).get(patient_id)
+
+    if doctor and patient:
+        appointment = Appointment(doctor_id=doctor_id, patient_id=patient_id, appointment_time=appointment_datetime)
+        session.add(appointment)
+        session.commit()
+        click.echo('Appointment created successfully!')
+    else:
+        click.echo('Doctor or Patient ID not found. Please check and try again.')
 
 if __name__ == '__main__':
     cli()

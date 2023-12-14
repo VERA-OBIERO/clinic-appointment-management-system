@@ -113,7 +113,18 @@ def update_appointment(appointment_id, new_appointment_time):
         session.commit()
         click.echo(f'Appointment with ID {appointment_id} updated successfully!')
     else:
-        click.echo('Appointment ID not found. Update failed.')
+        click.echo('Appointment ID not found. Update failed.') 
+
+@cli.command()
+@click.option('--appointment-id', prompt='Appointment ID', type=int, help='ID of the appointment to delete')
+def delete_appointment(appointment_id):
+    appointment = session.query(Appointment).get(appointment_id)
+    if appointment:
+        session.delete(appointment)
+        session.commit()
+        click.echo(f'Appointment with ID {appointment_id} deleted successfully!')
+    else:
+        click.echo('Appointment ID not found. Deletion failed.')
 
 
 if __name__ == '__main__':

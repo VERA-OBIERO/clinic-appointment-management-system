@@ -97,5 +97,24 @@ def list_appointments():
     else:
         click.echo("No appointments available.")
 
+@cli.command()
+@click.option('--appointment-id', prompt='Appointment ID', type=int, help='ID of the appointment to update')
+@click.option('--new-appointment-time', prompt='New Appointment Time', help='New date and time for the appointment (YYYY-MM-DD HH:MM)')
+def update_appointment(appointment_id, new_appointment_time):
+    try:
+        appointment_datetime = datetime.strptime(new_appointment_time, '%Y-%m-%d %H:%M')
+    except ValueError:
+        click.echo('Invalid date/time format. Please use YYYY-MM-DD HH:MM format.')
+        return
+
+    appointment = session.query(Appointment).get(appointment_id)
+    if appointment:
+        appointment.appointment_time = appointment_datetime
+        session.commit()
+        click.echo(f'Appointment with ID {appointment_id} updated successfully!')
+    else:
+        click.echo('Appointment ID not found. Update failed.')
+
+
 if __name__ == '__main__':
     cli()

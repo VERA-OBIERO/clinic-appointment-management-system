@@ -84,11 +84,42 @@ def make_appointment(doctor_id, patient_id, appointment_time):
     else:
         click.echo('Doctor or Patient ID not found. Please check and try again.')
 
+# Define Merge Sort algorithm
+def merge_sort(appointments):
+    if len(appointments) <= 1:
+        return appointments
+    
+    mid = len(appointments) // 2
+    left_half = appointments[:mid]
+    right_half = appointments[mid:]
+
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
+
+    return merge(left_half, right_half)
+
+def merge(left, right):
+    result = []
+    left_index, right_index = 0, 0
+
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index].appointment_time < right[right_index].appointment_time:
+            result.append(left[left_index])
+            left_index += 1
+        else:
+            result.append(right[right_index])
+            right_index += 1
+
+    result.extend(left[left_index:])
+    result.extend(right[right_index:])
+    return result
+
 @cli.command()
 def list_appointments():
     appointments = session.query(Appointment).all()
 
     if appointments:
+        appointments.sort(key=lambda x: x.appointment_time) 
         click.echo("List of Appointments:")
         for appointment in appointments:
             doctor_name = f"{appointment.doctor.first_name} {appointment.doctor.last_name}"

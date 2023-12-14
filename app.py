@@ -39,5 +39,16 @@ def create_doctor(first_name, last_name, gender, specialty, email, phone, availa
     session.commit()
     click.echo('Doctor created successfully!')
 
+@cli.command()
+def list_patients():
+    patients = session.query(Patient).all()
+
+    if patients:
+        click.echo("List of Patients:")
+        for patient in patients:
+            click.echo(f"ID: {patient.id}, Name: {patient.first_name} {patient.last_name}, Age: {patient.age}, Contact: {patient.contact}")
+    else:
+        click.echo("No patients available.")
+
 if __name__ == '__main__':
     cli()
